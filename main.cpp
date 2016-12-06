@@ -11,7 +11,7 @@ int main() {
     float d_mu = 1;
     float nu = 1;
     float temp = 1;
-    int step_num = 5;
+    int step_num = 25;
 
     //initializing surface
     Surface *crystal = new Surface();

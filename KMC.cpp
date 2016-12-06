@@ -104,11 +104,11 @@ void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, float nu, 
     float limit = crystal_surface->r_a_sum + crystal_surface->r_ei_sum;
 
     //print to file--uncomment for file generation
-    /*
+
     FILE *f_write = fopen("Datafile", "w");
     fprintf(f_write, "# Height matrix\n");
     fclose(f_write);
-    */
+
 
     print_cell_mat(n,n,crystal_surface->cells);
 
@@ -122,7 +122,8 @@ void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, float nu, 
         int x = int_gen(rng);
         int y = int_gen(rng);
         float kmc_rand = real_gen(rng);
-//        KMC_move(crystal_surface,x,y,kmc_rand,nu,temp); uncomment for file generation
+        KMC_move(crystal_surface,x,y,kmc_rand,nu,temp);
+        //uncomment for file generation
         if (print_count == print_step){
             print_count =0;
             print_cell_mat(n,n,crystal_surface->cells);
