@@ -7,8 +7,6 @@
 
 #include "KMC.h"
 
-double KMC_height_avrage(Surface *pSurface);
-
 void KMC_init(Surface *crystal_surface) {
 
     double r_a = 0;
@@ -152,7 +150,7 @@ void KMC_move(Surface *crystal_surface, double kmc_rand, double nu, double Bond)
 }
 
 void r_ei_cell_calculator(cell **p_cell, int i, int j, double nu, double Bond, int n) {
-
+    int delta_E;
     //periodic boundary condition:
     int next = i+1;
     int prev = i-1;
@@ -160,9 +158,11 @@ void r_ei_cell_calculator(cell **p_cell, int i, int j, double nu, double Bond, i
         next = 0;
     if (i == 0)
         prev = n-1;
+    //p.4 ch.5
 
-    double D_E_i_2 = (p_cell[i][j].h - 1. - p_cell[next][j].h) + (p_cell[i][j].h - 1. - p_cell[prev][j].h);
-    double D_E_i_1 = (p_cell[i][j].h - p_cell[next][j].h) + (p_cell[i][j].h - p_cell[prev][j].h);
+    delta_E = 1
+              + sing_bond(p_cell[i][j].h - p_cell[next][j].h)
+              + sing_bond(p_cell[i][j].h - p_cell[prev][j].h);
 
     next = j+1;
     prev = j-1;
@@ -171,10 +171,11 @@ void r_ei_cell_calculator(cell **p_cell, int i, int j, double nu, double Bond, i
     if (j == 0)
         prev = n-1;
 
-    double D_E_j_2 = (p_cell[i][j].h - 1 - p_cell[i][next].h) + (p_cell[i][j].h - 1 - p_cell[i][prev].h);
-    double D_E_j_1 = (p_cell[i][j].h - p_cell[i][next].h) + (p_cell[i][j].h - p_cell[i][prev].h);
-    double delta_E = (D_E_i_2 -D_E_i_1) + (D_E_j_2 - D_E_j_1);
-    p_cell[i][j].r_ei = (double) (nu * exp(-.5 * (delta_E) * Bond));
+    delta_E = delta_E
+              + sing_bond(p_cell[i][j].h - p_cell[i][next].h)
+              + sing_bond(p_cell[i][j].h - p_cell[i][prev].h);
+
+    p_cell[i][j].r_ei =  (nu * exp((delta_E) * Bond));
 }
 
 void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, double nu, double Bond) {
@@ -199,7 +200,7 @@ void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, double nu,
     print_cell_mat(n,n,crystal_surface->cells);
 
     std::uniform_int_distribution<int> int_gen(0, n-1);
-    fprintf(f_write, "%d\t%lg\n",timestep,KMC_height_avrage(crystal_surface));
+    fprintf(f_write, "%d\t%lg\n",timestep, KMC_height_average(crystal_surface));
     //running the KMC steps.
     int print_count = 0;
     for (int i = 0; i < run_num; ++i) {
@@ -212,7 +213,7 @@ void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, double nu,
         //uncomment for file generation
         if (print_count == print_step){
             timestep++;
-            fprintf(f_write, "%d\t%lg\n",timestep,KMC_height_avrage(crystal_surface));
+            fprintf(f_write, "%d\t%lg\n",timestep, KMC_height_average(crystal_surface));
             print_count = 0;
             print_cell_mat(n,n,crystal_surface->cells);
         }
@@ -221,7 +222,7 @@ void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, double nu,
     fclose(f_write);
 }
 
-double KMC_height_avrage(Surface *pSurface) {
+double KMC_height_average(Surface *pSurface) {
     double sum = 0;
     for (int i = 0; i < pSurface->n; ++i) {
         for (int j = 0; j < pSurface->n; ++j) {
@@ -229,4 +230,14 @@ double KMC_height_avrage(Surface *pSurface) {
         }
     }
     return sum/(pSurface->n*pSurface->n);
+}
+
+int sing_bond(int var) {
+
+    if (var <= 0)
+        return 1;
+    else //if (var > 0)
+        return 0;
+//    else
+//        return 0;
 }

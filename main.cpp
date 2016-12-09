@@ -9,10 +9,10 @@ int main() {
     //initialization conditions
     int n = 64;
 
-    double nu = 1.e12;
-    double temp = .7;
-    double bond = -10./temp;
-    double d_mu = 2/temp;
+    double nu = 1.;
+    double temp = .3;
+    double bond = -1./temp;
+    double d_mu = 5/temp;
     int step_num = 100000;
 
     //initializing surface
@@ -31,7 +31,7 @@ int main() {
 
     cout << endl;
 
-    int tot = 0;
+    double tot = 0.;
     for (int i = 0; i < n ; ++i) {
         for (int j = 0; j < n; ++j) {
             tot+= crystal->cells[i][j].h;
