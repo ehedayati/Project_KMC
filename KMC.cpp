@@ -7,6 +7,8 @@
 
 #include "KMC.h"
 
+double KMC_height_avrage(Surface *pSurface);
+
 void KMC_init(Surface *crystal_surface) {
 
     float r_a = 0;
@@ -95,6 +97,7 @@ void KMC_move(Surface *crystal_surface, float kmc_rand, float nu, float temp) {
 
     int x,y;
     int n = crystal_surface->n;
+
     index_search_binary(&x, &y, crystal_surface, kmc_rand);
 
     if (kmc_rand <= crystal_surface->r_ei_sum)
@@ -155,7 +158,7 @@ void r_ei_cell_calculator(cell **p_cell, int i, int j, float nu, float temp, int
     if (i == 0)
         prev = n-1;
 
-    float D_E_i = abs(p_cell[i][j].h - 1 - p_cell[next][j].h) + abs(p_cell[i][j].h - 1 - p_cell[prev][j].h);
+    float D_E_i = (p_cell[i][j].h - 1 - p_cell[next][j].h) + (p_cell[i][j].h - 1 - p_cell[prev][j].h);
 
     next = j+1;
     prev = j-1;
@@ -164,29 +167,34 @@ void r_ei_cell_calculator(cell **p_cell, int i, int j, float nu, float temp, int
     if (j == 0)
         prev = n-1;
 
-    float D_E_j = abs(p_cell[i][j].h - 1 - p_cell[i][next].h) + abs(p_cell[i][j].h - 1 - p_cell[i][prev].h);
-
-    p_cell[i][j].r_ei = (float) (nu * exp(-.5 * (D_E_i + D_E_j) * temp));
+    float D_E_j = (p_cell[i][j].h - 1 - p_cell[i][next].h) + (p_cell[i][j].h - 1 - p_cell[i][prev].h);
+    float bond = -10/temp;
+    p_cell[i][j].r_ei = (float) (nu * exp(-.5 * (D_E_i + D_E_j) * bond));
 }
 
 void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, float nu, float temp) {
 
-    int print_step = 1;
+
     //calculating the limits for generating random numbers
     int n = crystal_surface->n;
     float limit;
-
+    int print_step = n;
+    int timestep = 0;
     //print to file--uncomment for file generation
 
     FILE *f_write = fopen("Datafile", "w");
     fprintf(f_write, "# Height matrix\n");
     fclose(f_write);
 
+    f_write = fopen("Height_average", "w");
+    fprintf(f_write, "# Height average\n");
+
+
 
     print_cell_mat(n,n,crystal_surface->cells);
 
     std::uniform_int_distribution<int> int_gen(0, n-1);
-
+    fprintf(f_write, "%d\t%lg\n",timestep,KMC_height_avrage(crystal_surface));
     //running the KMC steps.
     int print_count = 0;
     for (int i = 0; i < run_num; ++i) {
@@ -199,10 +207,22 @@ void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, float nu, 
         KMC_move(crystal_surface, kmc_rand, nu, temp);
         //uncomment for file generation
         if (print_count == print_step){
+            timestep++;
+            fprintf(f_write, "%d\t%lg\n",timestep,KMC_height_avrage(crystal_surface));
             print_count =0;
-            print_cell_mat(n,n,crystal_surface->cells);
+//            print_cell_mat(n,n,crystal_surface->cells);
         }
     }
 
+    fclose(f_write);
+}
 
+double KMC_height_avrage(Surface *pSurface) {
+    double sum = 0;
+    for (int i = 0; i < pSurface->n; ++i) {
+        for (int j = 0; j < pSurface->n; ++j) {
+            sum +=pSurface->cells[i][j].h;
+        }
+    }
+    return sum/(pSurface->n*pSurface->n);
 }
