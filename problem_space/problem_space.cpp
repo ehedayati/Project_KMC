@@ -8,7 +8,7 @@
 #include "problem_space.h"
 
 //periodic init
-void r_adatom_evap_init(Surface *p_surface, float d_mu, float nu, float Temp) {
+void r_adatom_evap_init(Surface *p_surface, double d_mu, double nu, double Bond) {
 
     int D_E_i;
     int D_E_j;
@@ -18,12 +18,12 @@ void r_adatom_evap_init(Surface *p_surface, float d_mu, float nu, float Temp) {
 
     int next_i,next_j;
     int prev_i,prev_j;
-    float r_ei_cu_old = 0;
+    double r_ei_cu_old = 0;
     p_crystal_cells[0][0].cumulative_r_ei_index = 0;
     //everywhere but boundaries
     for (int i = 0; i < n; ++i) {
         //neighbours of i
-        float bond = -10/ Temp;
+
         next_i = i+1;//use mod for periodic, Minimum image condition
         prev_i = i-1;
         if (next_i == n)
@@ -39,13 +39,13 @@ void r_adatom_evap_init(Surface *p_surface, float d_mu, float nu, float Temp) {
             if (j == 0)
                 prev_j = n-1;
 
-            float ra = (nu * exp(bond) * exp(d_mu));
+            double ra = (nu * exp(Bond) * exp(d_mu));
             p_crystal_cells[i][j].r_a = ra;
             D_E_i = ((p_crystal_cells[i][j].h -1) - p_crystal_cells[next_i][j].h)
                     + ((p_crystal_cells[i][j].h - 1) - p_crystal_cells[prev_i][j].h);
             D_E_j = ((p_crystal_cells[i][j].h -1) - p_crystal_cells[i][next_j].h)
                     + ((p_crystal_cells[i][j].h - 1) - p_crystal_cells[i][prev_j].h);
-            p_crystal_cells[i][j].r_ei = (float) (nu * exp(-.5 * (D_E_i + D_E_j)*bond));
+            p_crystal_cells[i][j].r_ei = (nu * exp(-.5 * (D_E_i + D_E_j)*Bond));
             p_crystal_cells[i][j].cumulative_r_ei_index = r_ei_cu_old;
             r_ei_cu_old +=p_crystal_cells[i][j].r_ei;
         }
@@ -54,7 +54,7 @@ void r_adatom_evap_init(Surface *p_surface, float d_mu, float nu, float Temp) {
 }
 
 
-void surface_init(float d_mu, float nu, float Temp, Surface *crystal_surface) {
+void surface_init(double d_mu, double nu, double Temp, Surface *crystal_surface) {
     //initializing the random number generator, using mersenne_twister_engine
 
     int n = crystal_surface->n;
@@ -69,6 +69,7 @@ void surface_init(float d_mu, float nu, float Temp, Surface *crystal_surface) {
     empty.h = 0;
     empty.r_a = 0;
     empty.r_ei = 0;
+    empty.cumulative_r_ei_index = 0;
 
     for (int i = 0; i < n ; ++i) {
         for (int j = 0; j < n; ++j) {

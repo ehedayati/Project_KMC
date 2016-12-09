@@ -11,8 +11,8 @@ double KMC_height_avrage(Surface *pSurface);
 
 void KMC_init(Surface *crystal_surface) {
 
-    float r_a = 0;
-    float r_ei = 0;
+    double r_a = 0;
+    double r_ei = 0;
 
     int n = crystal_surface->n;
     for (int i = 0; i < n  ; ++i) {
@@ -29,7 +29,7 @@ void KMC_init(Surface *crystal_surface) {
 
 void KMC_update(Surface *crystal_surface) {
 
-    float r_ei_cu_old = 0;
+    double r_ei_cu_old = 0;
 
     int n = crystal_surface->n;
     for (int i = 0; i < n  ; ++i) {
@@ -43,14 +43,14 @@ void KMC_update(Surface *crystal_surface) {
 }
 
 
-void index_search_binary(int *x, int *y, Surface *crystal_surface, float kmc_rand) {
+void index_search_binary(int *x, int *y, Surface *crystal_surface, double kmc_rand) {
     int index;
     int n = crystal_surface->n;
-    float  r_a_sum = crystal_surface->r_a_sum;
-    float r_ei_sum  = crystal_surface->r_ei_sum;
+    double  r_a_sum = crystal_surface->r_a_sum;
+    double r_ei_sum  = crystal_surface->r_ei_sum;
 
     if (kmc_rand > r_ei_sum) {
-        index = (int) (((kmc_rand - r_ei_sum) * n*n) / r_a_sum)-1;
+        index = (int) (((kmc_rand - r_ei_sum) * n*n) / r_a_sum);
         *x = (index/n);
         *y = (index % n);
         if (*x >= n)
@@ -58,6 +58,8 @@ void index_search_binary(int *x, int *y, Surface *crystal_surface, float kmc_ran
         if (*y >= n)
             *y =n-1;
 
+        if (*y == -1)
+            exit(20);
         return;
     }
 
@@ -77,7 +79,7 @@ void index_search_binary(int *x, int *y, Surface *crystal_surface, float kmc_ran
             exit(16);
         if (i ==n)
             exit(15);
-        float cumulative = crystal_surface->cells[i][j].cumulative_r_ei_index;
+        double cumulative = crystal_surface->cells[i][j].cumulative_r_ei_index;
 
         if (cumulative < kmc_rand) {
             if (( cumulative + crystal_surface->cells[i][j].r_ei) >= kmc_rand)
@@ -93,7 +95,7 @@ void index_search_binary(int *x, int *y, Surface *crystal_surface, float kmc_ran
     *y = j;
 }
 
-void KMC_move(Surface *crystal_surface, float kmc_rand, float nu, float temp) {
+void KMC_move(Surface *crystal_surface, double kmc_rand, double nu, double Bond) {
 
     int x,y;
     int n = crystal_surface->n;
@@ -107,7 +109,7 @@ void KMC_move(Surface *crystal_surface, float kmc_rand, float nu, float temp) {
 
     //changing r_ei for cell
     crystal_surface->r_ei_sum -= crystal_surface->cells[x][y].r_ei;
-    r_ei_cell_calculator(crystal_surface->cells, x, y , nu, temp, n);
+    r_ei_cell_calculator(crystal_surface->cells, x, y , nu, Bond, n);
 
     crystal_surface->r_ei_sum += crystal_surface->cells[x][y].r_ei;
 
@@ -121,12 +123,13 @@ void KMC_move(Surface *crystal_surface, float kmc_rand, float nu, float temp) {
         next = 0;
     if (x == 0)
         prev = n-1;
+
 //    crystal_surface->r_ei_sum -= crystal_surface->cells[next][y].r_ei;
-    r_ei_cell_calculator(crystal_surface->cells, next, y, nu, temp, n);
+    r_ei_cell_calculator(crystal_surface->cells, next, y, nu, Bond, n);
 //    crystal_surface->r_ei_sum += crystal_surface->cells[next][y].r_ei;
 
 //    crystal_surface->r_ei_sum -= crystal_surface->cells[prev][y].r_ei;
-    r_ei_cell_calculator(crystal_surface->cells, prev, y, nu, temp, n);
+    r_ei_cell_calculator(crystal_surface->cells, prev, y, nu, Bond, n);
 //    crystal_surface->r_ei_sum += crystal_surface->cells[prev][y].r_ei;
 
     //changing r_ei for the next and prev to y
@@ -138,17 +141,17 @@ void KMC_move(Surface *crystal_surface, float kmc_rand, float nu, float temp) {
         prev = n-1;
 
 //    crystal_surface->r_ei_sum -= crystal_surface->cells[x][next].r_ei;
-    r_ei_cell_calculator(crystal_surface->cells, x, next, nu, temp, n);
+    r_ei_cell_calculator(crystal_surface->cells, x, next, nu, Bond, n);
 //    crystal_surface->r_ei_sum += crystal_surface->cells[x][next].r_ei;
 
 //    crystal_surface->r_ei_sum -= crystal_surface->cells[x][prev].r_ei;
-    r_ei_cell_calculator(crystal_surface->cells, x, prev, nu, temp, n);
+    r_ei_cell_calculator(crystal_surface->cells, x, prev, nu, Bond, n);
 //    crystal_surface->r_ei_sum += crystal_surface->cells[x][prev].r_ei;
     //updating the cumulative indexes
     KMC_update(crystal_surface);
 }
 
-void r_ei_cell_calculator(cell **p_cell, int i, int j, float nu, float temp, int n) {
+void r_ei_cell_calculator(cell **p_cell, int i, int j, double nu, double Bond, int n) {
 
     //periodic boundary condition:
     int next = i+1;
@@ -158,7 +161,7 @@ void r_ei_cell_calculator(cell **p_cell, int i, int j, float nu, float temp, int
     if (i == 0)
         prev = n-1;
 
-    float D_E_i = (p_cell[i][j].h - 1 - p_cell[next][j].h) + (p_cell[i][j].h - 1 - p_cell[prev][j].h);
+    double D_E_i = (p_cell[i][j].h - 1. - p_cell[next][j].h) + (p_cell[i][j].h - 1. - p_cell[prev][j].h);
 
     next = j+1;
     prev = j-1;
@@ -167,18 +170,18 @@ void r_ei_cell_calculator(cell **p_cell, int i, int j, float nu, float temp, int
     if (j == 0)
         prev = n-1;
 
-    float D_E_j = (p_cell[i][j].h - 1 - p_cell[i][next].h) + (p_cell[i][j].h - 1 - p_cell[i][prev].h);
-    float bond = -10/temp;
-    p_cell[i][j].r_ei = (float) (nu * exp(-.5 * (D_E_i + D_E_j) * bond));
+    double D_E_j = (p_cell[i][j].h - 1 - p_cell[i][next].h) + (p_cell[i][j].h - 1 - p_cell[i][prev].h);
+
+    p_cell[i][j].r_ei = (double) (nu * exp(-.5 * (D_E_i + D_E_j) * Bond));
 }
 
-void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, float nu, float temp) {
+void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, double nu, double Bond) {
 
 
     //calculating the limits for generating random numbers
     int n = crystal_surface->n;
-    float limit;
-    int print_step = n;
+    double limit;
+    int print_step = n*n;
     int timestep = 0;
     //print to file--uncomment for file generation
 
@@ -199,18 +202,17 @@ void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, float nu, 
     int print_count = 0;
     for (int i = 0; i < run_num; ++i) {
         limit = crystal_surface->r_a_sum + crystal_surface->r_ei_sum;
-        std::uniform_real_distribution<float> real_gen(0,limit);
+        std::uniform_real_distribution<double> real_gen(0,limit);
         print_count++;
-//        int x = int_gen(rng);
-//        int y = int_gen(rng);
-        float kmc_rand = real_gen(rng);
-        KMC_move(crystal_surface, kmc_rand, nu, temp);
+
+        double kmc_rand = real_gen(rng);
+        KMC_move(crystal_surface, kmc_rand, nu, Bond);
         //uncomment for file generation
         if (print_count == print_step){
             timestep++;
             fprintf(f_write, "%d\t%lg\n",timestep,KMC_height_avrage(crystal_surface));
-            print_count =0;
-//            print_cell_mat(n,n,crystal_surface->cells);
+            print_count = 0;
+            print_cell_mat(n,n,crystal_surface->cells);
         }
     }
 

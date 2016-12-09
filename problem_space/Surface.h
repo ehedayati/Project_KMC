@@ -13,8 +13,8 @@
 struct Surface {
     int n;
     cell **cells;
-    float r_a_sum;
-    float r_ei_sum;
+    double r_a_sum;
+    double r_ei_sum;
 };
 
 

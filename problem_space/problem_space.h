@@ -10,8 +10,8 @@
 
 #include "../main.h"
 
-void r_adatom_evap_init(Surface *p_surface, float d_mu, float nu, float Temp);
-void surface_init(float d_mu, float nu, float Temp, Surface *crystal_surface);
+void r_adatom_evap_init(Surface *p_surface, double d_mu, double nu, double Bond);
+void surface_init(double d_mu, double nu, double Temp, Surface *crystal_surface);
 unsigned int seeder();
 
 

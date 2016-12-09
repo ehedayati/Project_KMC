@@ -13,9 +13,9 @@
 
 void KMC_init(Surface *crystal_surface);
 void KMC_update(Surface *crystal_surface);
-void KMC_move(Surface *crystal_surface, float kmc_rand, float nu, float temp);
-void r_ei_cell_calculator(cell **p_cell, int i, int j, float nu, float temp, int n);
-void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, float nu, float temp);
-void index_search_binary(int *x, int *y, Surface *crystal_surface, float kmc_rand);
+void KMC_move(Surface *crystal_surface, double kmc_rand, double nu, double Bond);
+void r_ei_cell_calculator(cell **p_cell, int i, int j, double nu, double temp, int n);
+void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, double nu, double temp);
+void index_search_binary(int *x, int *y, Surface *crystal_surface, double kmc_rand);
 
 #endif //SC_PROJECT_CRYSTAL_GROWTH_KMC_IMP_H

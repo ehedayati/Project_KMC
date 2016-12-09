@@ -7,23 +7,26 @@ int main() {
     std::mt19937 rng;
     rng.seed(seeder());
     //initialization conditions
-    int n = 141;
-    float d_mu = 5;
-    float nu = 1;
-    float temp = 1;
-    int step_num = 20000;
+    int n = 10;
+
+    double nu = 1.e12;
+    double temp = 1.3;
+    double bond = -10.;
+    double d_mu = 5/temp;
+    int step_num = 10000;
 
     //initializing surface
     Surface *crystal = new Surface();
     crystal->n = n;
-    surface_init(d_mu, nu, temp, crystal);
+    surface_init(d_mu, nu, bond, crystal);
 
     // get surface ready for KMC Method
     KMC_init(crystal);
 
-// average z on time.
+// average z on time. done.
+
     //Run simulation
-    KMC_run(crystal, step_num, rng, nu, temp);
+    KMC_run(crystal, step_num, rng, nu, bond);
 
 
     cout << endl;
