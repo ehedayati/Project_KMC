@@ -161,7 +161,8 @@ void r_ei_cell_calculator(cell **p_cell, int i, int j, double nu, double Bond, i
     if (i == 0)
         prev = n-1;
 
-    double D_E_i = (p_cell[i][j].h - 1. - p_cell[next][j].h) + (p_cell[i][j].h - 1. - p_cell[prev][j].h);
+    double D_E_i_2 = (p_cell[i][j].h - 1. - p_cell[next][j].h) + (p_cell[i][j].h - 1. - p_cell[prev][j].h);
+    double D_E_i_1 = (p_cell[i][j].h - p_cell[next][j].h) + (p_cell[i][j].h - p_cell[prev][j].h);
 
     next = j+1;
     prev = j-1;
@@ -170,9 +171,10 @@ void r_ei_cell_calculator(cell **p_cell, int i, int j, double nu, double Bond, i
     if (j == 0)
         prev = n-1;
 
-    double D_E_j = (p_cell[i][j].h - 1 - p_cell[i][next].h) + (p_cell[i][j].h - 1 - p_cell[i][prev].h);
-
-    p_cell[i][j].r_ei = (double) (nu * exp(-.5 * (D_E_i + D_E_j) * Bond));
+    double D_E_j_2 = (p_cell[i][j].h - 1 - p_cell[i][next].h) + (p_cell[i][j].h - 1 - p_cell[i][prev].h);
+    double D_E_j_1 = (p_cell[i][j].h - p_cell[i][next].h) + (p_cell[i][j].h - p_cell[i][prev].h);
+    double delta_E = (D_E_i_2 -D_E_i_1) + (D_E_j_2 - D_E_j_1);
+    p_cell[i][j].r_ei = (double) (nu * exp(-.5 * (delta_E) * Bond));
 }
 
 void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, double nu, double Bond) {

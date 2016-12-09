@@ -7,13 +7,13 @@ int main() {
     std::mt19937 rng;
     rng.seed(seeder());
     //initialization conditions
-    int n = 10;
+    int n = 64;
 
     double nu = 1.e12;
-    double temp = 1.3;
-    double bond = -10.;
-    double d_mu = 5/temp;
-    int step_num = 10000;
+    double temp = .7;
+    double bond = -10./temp;
+    double d_mu = 2/temp;
+    int step_num = 100000;
 
     //initializing surface
     Surface *crystal = new Surface();
@@ -39,7 +39,7 @@ int main() {
         }
         cout << endl;
     }
-cout << tot;
+cout << tot/(n*n);
 
     free(crystal);
 //    FILE * gnuplotPipe = popen ("gnuplot -persistent", "w");

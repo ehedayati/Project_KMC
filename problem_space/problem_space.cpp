@@ -10,8 +10,9 @@
 //periodic init
 void r_adatom_evap_init(Surface *p_surface, double d_mu, double nu, double Bond) {
 
-    int D_E_i;
-    int D_E_j;
+    int D_E_i_2,D_E_i_1;
+    int D_E_j_2,D_E_j_1;
+    int delta_E;
     cell **p_crystal_cells;
     p_crystal_cells = p_surface->cells;
     int n = p_surface->n;
@@ -39,13 +40,18 @@ void r_adatom_evap_init(Surface *p_surface, double d_mu, double nu, double Bond)
             if (j == 0)
                 prev_j = n-1;
 
-            double ra = (nu * exp(Bond) * exp(d_mu));
+            double ra = (nu * exp(-3*Bond) * exp(d_mu));
             p_crystal_cells[i][j].r_a = ra;
-            D_E_i = ((p_crystal_cells[i][j].h -1) - p_crystal_cells[next_i][j].h)
-                    + ((p_crystal_cells[i][j].h - 1) - p_crystal_cells[prev_i][j].h);
-            D_E_j = ((p_crystal_cells[i][j].h -1) - p_crystal_cells[i][next_j].h)
-                    + ((p_crystal_cells[i][j].h - 1) - p_crystal_cells[i][prev_j].h);
-            p_crystal_cells[i][j].r_ei = (nu * exp(-.5 * (D_E_i + D_E_j)*Bond));
+            D_E_i_2 = abs((p_crystal_cells[i][j].h -1) - p_crystal_cells[next_i][j].h)
+                    + abs((p_crystal_cells[i][j].h - 1) - p_crystal_cells[prev_i][j].h);
+            D_E_i_1 = abs((p_crystal_cells[i][j].h ) - p_crystal_cells[next_i][j].h)
+                      + abs((p_crystal_cells[i][j].h) - p_crystal_cells[prev_i][j].h);
+            D_E_j_2 = abs((p_crystal_cells[i][j].h -1) - p_crystal_cells[i][next_j].h)
+                    + abs((p_crystal_cells[i][j].h - 1) - p_crystal_cells[i][prev_j].h);
+            D_E_j_1 = abs((p_crystal_cells[i][j].h) - p_crystal_cells[i][next_j].h)
+                      + abs((p_crystal_cells[i][j].h) - p_crystal_cells[i][prev_j].h);
+            delta_E = (D_E_i_2 -D_E_i_1) + (D_E_j_2 - D_E_j_1);
+            p_crystal_cells[i][j].r_ei = (nu * exp(-.5 * (delta_E)*Bond));
             p_crystal_cells[i][j].cumulative_r_ei_index = r_ei_cu_old;
             r_ei_cu_old +=p_crystal_cells[i][j].r_ei;
         }
