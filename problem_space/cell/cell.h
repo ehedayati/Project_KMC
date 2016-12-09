@@ -15,6 +15,7 @@ struct cell{
     float r_a; //hamiltonian of SOS method
     float r_ei; //hamiltonian of DG method
     int h;// cell height
+    float cumulative_r_ei_index;
 };
 
 

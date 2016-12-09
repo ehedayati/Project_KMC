@@ -18,10 +18,12 @@ void r_adatom_evap_init(Surface *p_surface, float d_mu, float nu, float Temp) {
 
     int next_i,next_j;
     int prev_i,prev_j;
+    float r_ei_cu_old = 0;
+    p_crystal_cells[0][0].cumulative_r_ei_index = 0;
     //everywhere but boundaries
     for (int i = 0; i < n; ++i) {
         //neighbours of i
-        next_i = i+1;
+        next_i = i+1;//use mod for periodic, Minimum image condition
         prev_i = i-1;
         if (next_i == n)
             next_i = 0;
@@ -42,6 +44,8 @@ void r_adatom_evap_init(Surface *p_surface, float d_mu, float nu, float Temp) {
             D_E_j = abs((p_crystal_cells[i][j].h -1) - p_crystal_cells[i][next_j].h)
                     + abs((p_crystal_cells[i][j].h - 1) - p_crystal_cells[i][prev_j].h);
             p_crystal_cells[i][j].r_ei = (float) (nu * exp(-.5 * (D_E_i + D_E_j) * Temp));
+            p_crystal_cells[i][j].cumulative_r_ei_index = r_ei_cu_old;
+            r_ei_cu_old +=p_crystal_cells[i][j].r_ei;
         }
     }
 
@@ -72,16 +76,17 @@ void surface_init(float d_mu, float nu, float Temp, Surface *crystal_surface) {
 
     crystal_surface->cells = crystal_cells;
 
+    // find the initial values for adatom and evaporation factor
     r_adatom_evap_init(crystal_surface, d_mu, nu, Temp);
 
     // uncomment for printing the initial condition
-
-    for (int i = 0; i < n ; ++i) {
-        for (int j = 0; j < n; ++j) {
-            printf("%lg,%lg\t",crystal_cells[i][j].r_ei,crystal_cells[i][j].r_a);
-        }
-        cout << endl;
-    }
+//
+//    for (int i = 0; i < n ; ++i) {
+//        for (int j = 0; j < n; ++j) {
+//            printf("%lg,%lg\t",crystal_cells[i][j].r_ei,crystal_cells[i][j].cumulative_r_ei_index);
+//        }
+//        cout << endl;
+//    }
 }
 
 
