@@ -7,13 +7,13 @@ int main() {
     std::mt19937 rng;
     rng.seed(seeder());
     //initialization conditions
-    int n = 64;
+    int n =32;
 
     double nu = 1.;
-    double temp = .3;
-    double bond = -1./temp;
-    double d_mu = 5/temp;
-    int step_num = 100000;
+//    double temp = 1;
+    double bond = -10;
+    double d_mu = 9;
+    int step_num = 1000*n*n;
 
     //initializing surface
     Surface *crystal = new Surface();
@@ -35,7 +35,7 @@ int main() {
     for (int i = 0; i < n ; ++i) {
         for (int j = 0; j < n; ++j) {
             tot+= crystal->cells[i][j].h;
-//            printf("%d\t",crystal->cells[i][j].h);
+//            printf("%lg\t",crystal->cells[i][j].r_a);
         }
         cout << endl;
     }

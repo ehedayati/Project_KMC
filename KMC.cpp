@@ -174,7 +174,9 @@ void r_ei_cell_calculator(cell **p_cell, int i, int j, double nu, double Bond, i
     delta_E = delta_E
               + sing_bond(p_cell[i][j].h - p_cell[i][next].h)
               + sing_bond(p_cell[i][j].h - p_cell[i][prev].h);
-
+//    FILE *f_write = fopen("delta_E", "a");
+//    fprintf(f_write, "%d\n",delta_E);
+//    fclose(f_write);
     p_cell[i][j].r_ei =  (nu * exp((delta_E) * Bond));
 }
 
