@@ -16,7 +16,6 @@ void r_adatom_evap_init(Surface *p_surface, double d_mu, double nu, double Bond)
 
     double r_ei_cu_old = 0;
     p_crystal_cells[0][0].cumulative_r_ei_index = 0;
-    //everywhere but boundaries
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
 

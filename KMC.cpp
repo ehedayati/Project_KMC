@@ -55,9 +55,6 @@ void index_search_binary(int *x, int *y, Surface *crystal_surface, double kmc_ra
             *x =n-1;
         if (*y >= n)
             *y =n-1;
-
-        if (*y == -1)
-            exit(20);
         return;
     }
 
@@ -115,10 +112,9 @@ void KMC_move(Surface *crystal_surface, double kmc_rand, double nu, double Bond)
     // periodic boundary condition set up
 
     //changing r_ei for the next and prev to x
-    int next = x+1;
+    int next = (x+1) % n;
     int prev = x-1;
-    if (next == n)
-        next = 0;
+
     if (x == 0)
         prev = n-1;
 
@@ -131,10 +127,9 @@ void KMC_move(Surface *crystal_surface, double kmc_rand, double nu, double Bond)
 //    crystal_surface->r_ei_sum += crystal_surface->cells[prev][y].r_ei;
 
     //changing r_ei for the next and prev to y
-    next = y+1;
+    next = (y+1) % n;
     prev = y-1;
-    if (next == n)
-        next = 0;
+
     if (y == 0)
         prev = n-1;
 
@@ -152,10 +147,9 @@ void KMC_move(Surface *crystal_surface, double kmc_rand, double nu, double Bond)
 void r_ei_cell_calculator(cell **p_cell, int i, int j, double nu, double Bond, int n) {
     int delta_E;
     //periodic boundary condition:
-    int next = i+1;
+    int next = (i+1) % n;
     int prev = i-1;
-    if (next == n)
-        next = 0;
+
     if (i == 0)
         prev = n-1;
     //p.4 ch.5
@@ -164,10 +158,9 @@ void r_ei_cell_calculator(cell **p_cell, int i, int j, double nu, double Bond, i
               + sing_bond(p_cell[i][j].h - p_cell[next][j].h)
               + sing_bond(p_cell[i][j].h - p_cell[prev][j].h);
 
-    next = j+1;
+    next = (j+1) % n;
     prev = j-1;
-    if (next == n)
-        next = 0;
+
     if (j == 0)
         prev = n-1;
 

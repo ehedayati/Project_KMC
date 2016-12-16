@@ -7,13 +7,13 @@ int main() {
     std::mt19937 rng;
     rng.seed(seeder());
     //initialization conditions
-    int n =32;
+    int n =20;
 
     double nu = 1.;
 //    double temp = 1;
     double bond = -10;
     double d_mu = 9;
-    int step_num = 1000*n*n;
+    int step_num = 10*n*n;
 
     //initializing surface
     Surface *crystal = new Surface();
