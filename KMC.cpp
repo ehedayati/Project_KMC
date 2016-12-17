@@ -167,9 +167,6 @@ void r_ei_cell_calculator(cell **p_cell, int i, int j, double nu, double Bond, i
     delta_E = delta_E
               + sing_bond(p_cell[i][j].h - p_cell[i][next].h)
               + sing_bond(p_cell[i][j].h - p_cell[i][prev].h);
-//    FILE *f_write = fopen("delta_E", "a");
-//    fprintf(f_write, "%d\n",delta_E);
-//    fclose(f_write);
     p_cell[i][j].r_ei =  (nu * exp((delta_E) * Bond));
 }
 
@@ -206,7 +203,7 @@ void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, double nu,
         double kmc_rand = real_gen(rng);
         KMC_move(crystal_surface, kmc_rand, nu, Bond);
         //uncomment for file generation
-        if (print_count == print_step){
+        if (print_count == print_step) {
             timestep++;
             fprintf(f_write, "%d\t%lg\n",timestep, KMC_height_average(crystal_surface));
             print_count = 0;
@@ -233,6 +230,5 @@ int sing_bond(int var) {
         return 1;
     else //if (var > 0)
         return 0;
-//    else
-//        return 0;
+
 }

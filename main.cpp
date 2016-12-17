@@ -1,19 +1,38 @@
 #include "main.h"
 
-
-
-
 int main() {
     std::mt19937 rng;
     rng.seed(seeder());
     //initialization conditions
-    int n =20;
+    int n =10;
 
+    //returns available memory to use
+    cout << GetRamInKB() << endl;
     double nu = 1.;
 //    double temp = 1;
-    double bond = -10;
-    double d_mu = 9;
-    int step_num = 10*n*n;
+    init_problem initialization;
+init:
+    try {
+        initialization = InitialCondition();
+    } catch (int e)
+    {
+        cout << "I was not able to find 'initialization_data' to read the initialized data" << endl;
+        cout << "please enter 'r' to retry or any other key to exit: ";
+        char input[100];
+        cin >> input;
+        if (input[0] == 'r' || input[0] == 'R')
+            goto init;
+        else
+            return 0;
+    }
+
+
+    double bond = initialization.bond;
+    double d_mu = initialization.d_mu;
+    int step_num = initialization.sweep*n*n;
+//    double bond = -9.2;
+//    double d_mu = 9;
+//    int step_num = 100*n*n;
 
     //initializing surface
     Surface *crystal = new Surface();
@@ -23,7 +42,6 @@ int main() {
     // get surface ready for KMC Method
     KMC_init(crystal);
 
-// average z on time. done.
 
     //Run simulation
     KMC_run(crystal, step_num, rng, nu, bond);
@@ -37,9 +55,9 @@ int main() {
             tot+= crystal->cells[i][j].h;
 //            printf("%lg\t",crystal->cells[i][j].r_a);
         }
-        cout << endl;
+//        cout << endl;
     }
-cout << tot/(n*n);
+    cout << tot/(n*n);
 
     free(crystal);
 //    FILE * gnuplotPipe = popen ("gnuplot -persistent", "w");
@@ -47,6 +65,7 @@ cout << tot/(n*n);
 
     return 0;
 }
+
 
 
 

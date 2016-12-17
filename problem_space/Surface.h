@@ -17,5 +17,10 @@ struct Surface {
     double r_ei_sum;
 };
 
+struct init_problem {
+    double bond;
+    double d_mu;
+    int sweep;
+};
 
 #endif //SC_PROJECT_CRYSTAL_GROWTH_KMC_SURFACE_H

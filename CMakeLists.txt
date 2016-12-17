@@ -8,5 +8,5 @@ include_directories ( ${Boost_INCLUDE_DIRS} )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(CMAKE_CXX_FLAGS_RELEASE "-C0")
-set(SOURCE_FILES main.cpp main.h problem_space/problem_space.cpp problem_space/problem_space.h problem_space/cell/cell.cpp problem_space/cell/cell.h problem_space/cell/coordinate.h problem_space/cell/neighbor.h problem_space/Surface.h KMC.cpp KMC.h global_functions.cpp)
+set(SOURCE_FILES main.cpp main.h problem_space/problem_space.cpp problem_space/problem_space.h problem_space/cell/cell.cpp problem_space/cell/cell.h problem_space/cell/coordinate.h problem_space/cell/neighbor.h problem_space/Surface.h KMC.cpp KMC.h global_functions.cpp memory_func.cpp)
 add_executable(SC_porject_crystal_growth_KMC ${SOURCE_FILES})

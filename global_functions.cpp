@@ -21,3 +21,43 @@ void print_cell_mat(int rows, int columns, cell **matrix) {
 
     fclose(f_write);
 }
+
+init_problem InitialCondition() {
+    FILE *init_read = fopen("initialization_data", "r");;
+    if(init_read == NULL)
+        throw 21;
+
+    init_problem initialization;
+    char line[256];
+    while(fgets(line, sizeof(line), init_read))
+    {
+        double bond;
+        if(sscanf(line, "Bond: %lf kB", &bond) == 1)
+        {
+            initialization.bond = bond;
+            break;
+        }
+    }
+
+    while(fgets(line, sizeof(line), init_read))
+    {
+        double d_mu;
+        if(sscanf(line, "Delta_mu: %lf kB", &d_mu) == 1)
+        {
+            initialization.d_mu = d_mu;
+            break;
+        }
+    }
+
+    while(fgets(line, sizeof(line), init_read))
+    {
+        int sweep;
+        if(sscanf(line, "Sweep: %d kB", &sweep) == 1)
+        {
+            initialization.sweep = sweep;
+            break;
+        }
+    }
+    fclose(init_read);
+    return initialization;
+}

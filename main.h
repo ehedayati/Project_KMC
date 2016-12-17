@@ -10,6 +10,10 @@
 
 //libraries
 #include <iostream>
+#include <unistd.h>
+#include <sys/sysinfo.h>
+#include <cstdlib>
+#include <cstdio>
 #include <random>
 #include <cstring>
 #include "problem_space/cell/cell.h"
@@ -23,7 +27,8 @@
 //namespaces
 using namespace std;
 void print_cell_mat(int rows, int columns, cell **matrix);
-
-
+init_problem InitialCondition();
+unsigned long long getTotalSystemMemory();
+int GetRamInKB(void);
 
 #endif //SC_PROJECT_CRYSTAL_GROWTH_KMC_MAIN_H
