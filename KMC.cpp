@@ -180,7 +180,7 @@ void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, double nu,
     int timestep = 0;
     //print to file--uncomment for file generation
 
-    FILE *f_write = fopen("Datafile", "w");
+    FILE *f_write = fopen("visualization/.Datafile.xyz", "w");
 //    fprintf(f_write, "%d\n",n*n);
 
     fclose(f_write);
