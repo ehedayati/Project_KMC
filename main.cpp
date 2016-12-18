@@ -3,9 +3,6 @@
 int main() {
     std::mt19937 rng;
     rng.seed(seeder());
-    //initialization conditions
-    int n =10;
-
     //returns available memory to use
     cout << GetRamInKB() << endl;
     double nu = 1.;
@@ -26,7 +23,7 @@ init:
             return 0;
     }
 
-
+    int n = initialization.n;
     double bond = initialization.bond;
     double d_mu = initialization.d_mu;
     int step_num = initialization.sweep*n*n;

@@ -10,15 +10,14 @@
 void print_cell_mat(int rows, int columns, cell **matrix) {
 
     FILE *f_write = fopen("Datafile", "a");
-    fprintf(f_write, "\n\n");
+    fprintf(f_write, "%d\n\n",rows*columns);
 
     for (int r = 0; r < rows; ++r) {
         for (int c = 0; c < columns; ++c) {
-            fprintf(f_write, "%d\t",matrix[r][c].h);
+            fprintf(f_write, "S %d %d %d\t\n",r,c,matrix[r][c].h);
         }
-        fprintf(f_write,"\n");
     }
-
+//    fprintf(f_write,"\n");
     fclose(f_write);
 }
 
@@ -31,8 +30,18 @@ init_problem InitialCondition() {
     char line[256];
     while(fgets(line, sizeof(line), init_read))
     {
+        int n;
+        if(sscanf(line, "n: %d", &n) == 1)
+        {
+            initialization.n = n;
+            break;
+        }
+    }
+
+    while(fgets(line, sizeof(line), init_read))
+    {
         double bond;
-        if(sscanf(line, "Bond: %lf kB", &bond) == 1)
+        if(sscanf(line, "Bond: %lf", &bond) == 1)
         {
             initialization.bond = bond;
             break;
@@ -42,7 +51,7 @@ init_problem InitialCondition() {
     while(fgets(line, sizeof(line), init_read))
     {
         double d_mu;
-        if(sscanf(line, "Delta_mu: %lf kB", &d_mu) == 1)
+        if(sscanf(line, "Delta_mu: %lf", &d_mu) == 1)
         {
             initialization.d_mu = d_mu;
             break;
@@ -52,7 +61,7 @@ init_problem InitialCondition() {
     while(fgets(line, sizeof(line), init_read))
     {
         int sweep;
-        if(sscanf(line, "Sweep: %d kB", &sweep) == 1)
+        if(sscanf(line, "Sweep: %d", &sweep) == 1)
         {
             initialization.sweep = sweep;
             break;

@@ -18,6 +18,7 @@ struct Surface {
 };
 
 struct init_problem {
+    int n;
     double bond;
     double d_mu;
     int sweep;
