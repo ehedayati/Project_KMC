@@ -17,7 +17,7 @@ void print_cell_mat(int rows, int columns, cell **matrix) {
             fprintf(f_write, "S %d %d %d\t\n",r,c,matrix[r][c].h);
         }
     }
-//    fprintf(f_write,"\n");
+
     fclose(f_write);
 }
 
@@ -26,7 +26,7 @@ init_problem InitialCondition() {
     if(init_read == NULL)
         throw 21;
 
-    init_problem initialization;
+    init_problem initialization = init_problem();
     char line[256];
     while(fgets(line, sizeof(line), init_read))
     {
@@ -35,7 +35,8 @@ init_problem InitialCondition() {
         {
             initialization.n = n;
             break;
-        }
+        } else
+            throw 50;
     }
 
     while(fgets(line, sizeof(line), init_read))
@@ -45,7 +46,8 @@ init_problem InitialCondition() {
         {
             initialization.bond = bond;
             break;
-        }
+        } else
+            throw 50;
     }
 
     while(fgets(line, sizeof(line), init_read))
@@ -55,7 +57,8 @@ init_problem InitialCondition() {
         {
             initialization.d_mu = d_mu;
             break;
-        }
+        } else
+            throw 50;
     }
 
     while(fgets(line, sizeof(line), init_read))
@@ -65,7 +68,8 @@ init_problem InitialCondition() {
         {
             initialization.sweep = sweep;
             break;
-        }
+        } else
+            throw 50;
     }
     fclose(init_read);
     return initialization;

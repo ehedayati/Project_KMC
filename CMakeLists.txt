@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.6)
 project(SC_project_crystal_growth_KMC)
 
-find_package(Boost)
-link_directories ( ${Boost_LIBRARY_DIRS} )
-include_directories ( ${Boost_INCLUDE_DIRS} )
+#find_package(Boost)
+#link_directories ( ${Boost_LIBRARY_DIRS} )
+#include_directories ( ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
@@ -12,11 +12,14 @@ set(SOURCE_FILES main.cpp main.h problem_space/problem_space.cpp problem_space/p
 add_executable(SC_porject_crystal_growth_KMC ${SOURCE_FILES})
 add_custom_command(TARGET SC_porject_crystal_growth_KMC POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/visualization $<TARGET_FILE_DIR:SC_porject_crystal_growth_KMC>/visualization)
+        ${CMAKE_SOURCE_DIR}/visualization/vmd $<TARGET_FILE_DIR:SC_porject_crystal_growth_KMC>/visualization/vmd)
 
 add_custom_command(TARGET SC_porject_crystal_growth_KMC POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_SOURCE_DIR}/initialization_data $<TARGET_FILE_DIR:SC_porject_crystal_growth_KMC>)
+add_custom_command(TARGET SC_porject_crystal_growth_KMC POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/visualization/gnu.gp $<TARGET_FILE_DIR:SC_porject_crystal_growth_KMC>/visualizationcd/gnuplot)
 
 add_custom_target(build-time-make-directory PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${visualization})
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${visualization/vmd} ${visualization/gnuplot})
