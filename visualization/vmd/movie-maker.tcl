@@ -1,4 +1,4 @@
-mol load  xyz .Datafile.xyz
+mol load  xyz visualization/vmd/.Datafile.xyz
 mol rep cpk
 mol addrep 0
 rotate x by -70

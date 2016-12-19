@@ -180,12 +180,12 @@ void KMC_run(Surface *crystal_surface, int run_num, std::mt19937 rng, double nu,
     int timestep = 0;
     //print to file--uncomment for file generation
 
-    FILE *f_write = fopen("visualization/.Datafile.xyz", "w");
+    FILE *f_write = fopen("visualization/vmd/.Datafile.xyz", "w");
 //    fprintf(f_write, "%d\n",n*n);
 
     fclose(f_write);
 
-    f_write = fopen("Height_average", "w");
+    f_write = fopen("visualization/gnuplot/Height_average", "w");
     fprintf(f_write, "# Height average\n");
 
 

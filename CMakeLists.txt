@@ -10,16 +10,26 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(CMAKE_CXX_FLAGS_RELEASE "-C0")
 set(SOURCE_FILES main.cpp main.h problem_space/problem_space.cpp problem_space/problem_space.h problem_space/cell/cell.cpp problem_space/cell/cell.h problem_space/cell/coordinate.h problem_space/cell/neighbor.h problem_space/Surface.h KMC.cpp KMC.h global_functions.cpp memory_func.cpp)
 add_executable(SC_porject_crystal_growth_KMC ${SOURCE_FILES})
+
 add_custom_command(TARGET SC_porject_crystal_growth_KMC POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/visualization/vmd $<TARGET_FILE_DIR:SC_porject_crystal_growth_KMC>/visualization/vmd)
+        ${CMAKE_SOURCE_DIR}/visualization/vmd
+        $<TARGET_FILE_DIR:SC_porject_crystal_growth_KMC>/visualization/vmd)
+add_custom_command(TARGET SC_porject_crystal_growth_KMC POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/visualization/gnuplot
+        $<TARGET_FILE_DIR:SC_porject_crystal_growth_KMC>/visualization/gnuplot)
 
 add_custom_command(TARGET SC_porject_crystal_growth_KMC POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_SOURCE_DIR}/initialization_data $<TARGET_FILE_DIR:SC_porject_crystal_growth_KMC>)
 add_custom_command(TARGET SC_porject_crystal_growth_KMC POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_SOURCE_DIR}/visualization/gnu.gp $<TARGET_FILE_DIR:SC_porject_crystal_growth_KMC>/visualizationcd/gnuplot)
+        ${CMAKE_SOURCE_DIR}/main.py $<TARGET_FILE_DIR:SC_porject_crystal_growth_KMC>)
+add_custom_command(TARGET SC_porject_crystal_growth_KMC POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/runme $<TARGET_FILE_DIR:SC_porject_crystal_growth_KMC>)
 
-add_custom_target(build-time-make-directory PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${visualization/vmd} ${visualization/gnuplot})
+set(directory "visualization/vmd" "visualization/gnuplot")
+add_custom_target(build-time-make-directory1 PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${directory})

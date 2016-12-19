@@ -9,7 +9,7 @@
 
 void print_cell_mat(int rows, int columns, cell **matrix) {
 
-    FILE *f_write = fopen("visualization/.Datafile.xyz", "a");
+    FILE *f_write = fopen("visualization/vmd/.Datafile.xyz", "a");
     fprintf(f_write, "%d\n\n",rows*columns);
 
     for (int r = 0; r < rows; ++r) {
