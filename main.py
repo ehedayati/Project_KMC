@@ -27,8 +27,19 @@ E4var = StringVar()
 E4var.set("100")
 E4 = Entry(top, bd=5, textvariable=E4var, borderwidth=1).grid(row=4, column=3)
 
+print_init_data(E1var.get(), E2var.get(), E3var.get(), E4var.get())
+
+
+def print_init_data(a, b, c, d):
+    f = open('initialization_data', 'w')
+    f.write('n: ' + str(a))  # python will convert \n to os.linesep
+    f.write('\nBond: ' + str(b))
+    f.write('\nDelta_mu: ' + str(c))
+    f.write('\nSweep: ' + str(d) + '\n')
+    f.close()
 
 def run_kmc():
+    print_init_data(E1var.get(), E2var.get(), E3var.get(), E4var.get())
     call(["./SC_porject_crystal_growth_KMC"])
 def gen_movie():
     call(["bash","visualization/vmd/runme.sh"])
